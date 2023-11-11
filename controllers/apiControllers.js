@@ -24,4 +24,20 @@ router.post(`/notes`, (req, res) => {
     res.json(newData);
 });
 
+// Delete a specific note
+router.delete(`/notes/:id`, (req, res) => {
+    const dataBase = JSON.parse(fs.readFileSync(`./db/db.json`));
+    const id = req.params.id
+    console.log(`${req.method} request to ${req.url}`);
+    for (let i = 0; i < dataBase.length; i++){
+        if(dataBase[i].id == id){
+            console.log(dataBase[i]);
+            dataBase.splice(i, 1);
+            fs.writeFileSync(`./db/db.json`, JSON.stringify(dataBase, null, 4));
+            return res.json(dataBase);
+        }
+    }
+    return res.status(404).send("sorry, no such note")
+})
+
 module.exports = router;
